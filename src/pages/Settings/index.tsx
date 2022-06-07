@@ -1,7 +1,8 @@
 import React from "react";
+import Container from "components/Container";
 
 const SettingsPage = () => {
-  return <div>SettingsPage</div>;
+  return <Container>SettingsPage</Container>;
 };
 
 export default SettingsPage;

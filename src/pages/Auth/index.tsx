@@ -2,31 +2,28 @@ import React from "react";
 import {
   Button,
   Card,
-  CardActions,
   CardContent,
-  Container,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import Container from "components/Container";
 
 const Auth = () => {
   return (
-    <Container maxWidth="xs" sx={{ mt: 6 }}>
+    <Container centered>
       <Typography variant="h4" mb={3}>
         Sign in
       </Typography>
-      <Card elevation={6} sx={{ mt: "auto" }}>
+      <Card elevation={6} sx={{ minWidth: "400px" }}>
         <CardContent>
           <Stack spacing={2}>
             <TextField label="Email" />
             <TextField label="Password" />
-          </Stack>
-          <CardActions>
             <Button variant="contained" color="error">
               Sign in
             </Button>
-          </CardActions>
+          </Stack>
         </CardContent>
       </Card>
     </Container>

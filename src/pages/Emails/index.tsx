@@ -1,7 +1,8 @@
 import React from "react";
+import Container from "components/Container";
 
 const EmailsPage = () => {
-  return <div>EmailsPage</div>;
+  return <Container>EmailsPage</Container>;
 };
 
 export default EmailsPage;

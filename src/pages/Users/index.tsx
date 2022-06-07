@@ -9,6 +9,7 @@ import {
   IconButton,
   Dialog,
 } from "@mui/material";
+import Container from "components/Container";
 import { Delete, Search } from "@mui/icons-material";
 import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import ConfirmDialog from "components/Modals/ConfirmDialog";
@@ -38,7 +39,7 @@ const UsersPage = () => {
       field: "View Details",
       headerName: "",
       width: 300,
-      renderCell: params => {
+      renderCell: (params) => {
         return (
           <Button
             variant="outlined"
@@ -68,11 +69,13 @@ const UsersPage = () => {
   };
 
   return (
-    <Box sx={{ pl: 10, pr: 2 }}>
+    <Container>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <ConfirmDialog
           onClose={() => setOpen(false)}
-          onConfirm={() => {}}
+          onConfirm={() => {
+            console.log(selectedRows);
+          }}
           title="Are you sure?"
           message="These users will be permanently deleted from the database"
         />
@@ -108,7 +111,7 @@ const UsersPage = () => {
           autoHeight
           pageSize={5}
           rowsPerPageOptions={[5]}
-          onSelectionModelChange={ids => setSelectedRows(ids)}
+          onSelectionModelChange={(ids) => setSelectedRows(ids)}
           checkboxSelection
         />
       </Box>
@@ -117,7 +120,7 @@ const UsersPage = () => {
           Delete <Delete />
         </Button>
       )}
-    </Box>
+    </Container>
   );
 };
 

@@ -5,13 +5,12 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Container,
   Typography,
   Stack,
   TextField,
   IconButton,
-  Box,
 } from "@mui/material";
+import Container from "components/Container";
 import { ArrowForward, Search } from "@mui/icons-material";
 import { applications as applicationsData } from "data";
 import { useNavigate } from "react-router";
@@ -31,7 +30,7 @@ const ApplicationsPage = () => {
   };
 
   return (
-    <Box pl={10} pr={2}>
+    <Container>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         justifyContent="space-between"
@@ -72,7 +71,7 @@ const ApplicationsPage = () => {
           </ListItemButton>
         ))}
       </List>
-    </Box>
+    </Container>
   );
 };
 

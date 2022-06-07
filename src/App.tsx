@@ -19,7 +19,8 @@ const App = () => {
         sx={{
           minHeight: "100vh",
           bgcolor: "rgb(245, 245, 245)",
-          py: 3,
+          display: "flex",
+          flexDirection: "column"
         }}
       >
         <Routes>
