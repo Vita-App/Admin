@@ -7,7 +7,6 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-[![Build Test][actions-badge]][actions-url]
 
 <!-- PROJECT LOGO -->
 <br />
