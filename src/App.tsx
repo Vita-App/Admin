@@ -20,7 +20,7 @@ const App = () => {
           minHeight: "100vh",
           bgcolor: "rgb(245, 245, 245)",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Routes>

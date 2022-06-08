@@ -235,12 +235,6 @@ Project Link: [https://vitaa-admin.netlify.app/](https://vitaa-admin.netlify.app
 [product-screenshotv]: assets/confirm-booking.png
 [vita-hld]: assets/vita-hld.png
 
-
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/Vita-App/Admin.svg)](https://starchart.cc/Vita-App/Admin)
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
