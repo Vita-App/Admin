@@ -1,33 +1,4 @@
-import React from "react";
-import {
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import Container from "components/Container";
+import OtpPage from "./Otp";
+import LogIn from "./LogIn";
 
-const Auth = () => {
-  return (
-    <Container centered>
-      <Typography variant="h4" mb={3}>
-        Sign in
-      </Typography>
-      <Card elevation={6} sx={{ minWidth: "400px" }}>
-        <CardContent>
-          <Stack spacing={2}>
-            <TextField label="Email" />
-            <TextField label="Password" />
-            <Button variant="contained" color="error">
-              Sign in
-            </Button>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Container>
-  );
-};
-
-export default Auth;
+export { OtpPage, LogIn };

@@ -9,7 +9,7 @@ import EmailsPage from "pages/Emails";
 import SettingsPage from "pages/Settings";
 import UserPage from "pages/User";
 import ApplicationPage from "pages/Application";
-import AuthPage from "pages/Auth";
+import { LogIn, OtpPage } from "pages/Auth";
 
 const App = () => {
   return (
@@ -20,12 +20,13 @@ const App = () => {
           minHeight: "100vh",
           bgcolor: "rgb(245, 245, 245)",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Routes>
-          <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<UsersPage />} />
+          <Route path="/login" element={<LogIn />} />
+          <Route path="/otp" element={<OtpPage />} />
           <Route path="/user/:id" element={<UserPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
           <Route path="/application/:id" element={<ApplicationPage />} />
