@@ -55,7 +55,7 @@ const ApplicationsPage = () => {
         />
       </Stack>
       <List>
-        {applications.map(application => (
+        {applications.map((application) => (
           <ListItemButton
             key={application.id}
             onClick={() => navigate(`/application/${application.id}`)}
