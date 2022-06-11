@@ -16,7 +16,7 @@ interface Props {
   message: string;
 }
 
-const ConfirmDialog: React.FC<Props> = props => {
+const ConfirmDialog: React.FC<Props> = (props) => {
   return (
     <DialogContent>
       <Box display="flex" justifyContent="center">
