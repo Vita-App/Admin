@@ -8,7 +8,7 @@ const drawerWidth = "60px";
 const SideDrawer = () => {
   const { pathname } = useLocation();
 
-  if (pathname === "/auth") return <></>;
+  if (pathname === "/login" || pathname === "/otp") return <></>;
 
   return (
     <Drawer
