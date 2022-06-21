@@ -1,15 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { CssBaseline } from "@mui/material";
+import App from "./App";
+import { PRODUCTION } from "config.keys";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 root.render(
-  <BrowserRouter>
-    <CssBaseline>
-      <App />
-    </CssBaseline>
-  </BrowserRouter>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <CssBaseline>
+        {!PRODUCTION && <ReactQueryDevtools />}
+        <App />
+      </CssBaseline>
+    </BrowserRouter>
+  </QueryClientProvider>
 );

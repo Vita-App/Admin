@@ -1,5 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useQuery } from "react-query";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -18,7 +20,9 @@ import Container from "components/Container";
 import { Delete, Search } from "@mui/icons-material";
 import { DataGrid, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
 import ConfirmDialog from "components/Modals/ConfirmDialog";
-import { users } from "data";
+// import { users } from "data";
+import { SERVER_URL } from "config.keys";
+import { UserType } from "types";
 
 enum UserStatus {
   Active = "active",
@@ -39,7 +43,15 @@ const Dot: React.FC<{ color: string }> = ({ color }) => {
   );
 };
 
+const getUsers = async () => {
+  const { data } = await axios.get<UserType[]>(`${SERVER_URL}/api/get-users`);
+
+  return data;
+};
+
 const UsersPage = () => {
+  const { isLoading, data: users } = useQuery(["users"], getUsers);
+  const [rows, setRows] = useState<UserType[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const defaultDialogState = {
@@ -48,20 +60,8 @@ const UsersPage = () => {
     message: "",
   };
   const [openDialog, setOpenDialog] = useState(defaultDialogState);
-  const [rows, setRows] = useState(users);
-  const [selectedRows, setSelectedRows] = useState<GridSelectionModel>([]);
 
-  const onSearch = () => {
-    const search = searchRef.current!.value;
-    const filteredUsers = users.filter(
-      (user: any) =>
-        user.first_name.toLowerCase().includes(search.toLowerCase()) ||
-        user.last_name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase())
-    );
-    setSelectedRows([]);
-    setRows(filteredUsers);
-  };
+  const [selectedRows, setSelectedRows] = useState<GridSelectionModel>([]);
 
   const onStatusChange = (userId: string, status: UserStatus) => {
     const title =
@@ -84,26 +84,38 @@ const UsersPage = () => {
     });
   };
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef<UserType>[] = [
     {
       field: "first_name",
       headerName: "First Name",
+      renderCell: ({ row }) =>
+        row.first_name || (
+          <Typography color="red" variant="subtitle2">
+            {!row.verified ? "Not Verified" : "Unregistered"}
+          </Typography>
+        ),
     },
     {
       field: "last_name",
       headerName: "Last Name",
+      renderCell: ({ row }) =>
+        row.last_name || (
+          <Typography color="red" variant="subtitle2">
+            {!row.verified ? "Not Verified" : "Unregistered"}
+          </Typography>
+        ),
     },
     {
       field: "email",
       headerName: "Email",
-      width: 200,
+      width: 250,
     },
     {
       field: "mentor",
       headerName: "Mentor",
       width: 100,
       renderCell: (params) => {
-        return params.row.mentor ? (
+        return params.row.is_mentor ? (
           <Check color="success" />
         ) : (
           <Close color="error" />
@@ -117,11 +129,13 @@ const UsersPage = () => {
       renderCell: (params) => {
         return (
           <Select
-            value={params.row.status}
+            value={params.row.status || "active"}
             fullWidth
             sx={{ border: "none", outline: "none" }}
             label="Change Status"
-            onChange={(e) => onStatusChange(params.row.id, e.target.value)}
+            onChange={(e) =>
+              onStatusChange(params.row._id, e.target.value as UserStatus)
+            }
           >
             <MenuItem value="active">
               <Stack direction="row" alignItems="center" spacing={1}>
@@ -156,7 +170,7 @@ const UsersPage = () => {
             color="error"
             sx={{ zIndex: 100 }}
             onClick={() => {
-              navigate(`/user/${params.row.id}`);
+              navigate(`/user/${params.row._id}`);
             }}
           >
             View Details
@@ -165,6 +179,26 @@ const UsersPage = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    setRows(users || []);
+  }, [users]);
+
+  if (!users) return <div />;
+
+  const onSearch = () => {
+    const search = searchRef.current!.value;
+
+    const filteredRows = users.filter((user) => {
+      return (
+        user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+        user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+
+    setRows(filteredRows);
+  };
 
   return (
     <Container>
@@ -190,14 +224,29 @@ const UsersPage = () => {
         <Typography variant="h3" gutterBottom>
           Users
         </Typography>
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center">
           <FormControlLabel
             control={
               <Checkbox
                 color="primary"
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setRows(users.filter((user: any) => user.mentor));
+                    setRows(users.filter((user: UserType) => !user.first_name));
+                  } else {
+                    setRows(users);
+                  }
+                }}
+              />
+            }
+            label="Unregistered"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setRows(users.filter((user: UserType) => user.is_mentor));
                   } else {
                     setRows(users);
                   }
@@ -224,6 +273,7 @@ const UsersPage = () => {
       </Stack>
       <Box mb={2}>
         <DataGrid
+          loading={isLoading}
           columns={columns}
           rows={rows}
           autoHeight
@@ -231,6 +281,7 @@ const UsersPage = () => {
           rowsPerPageOptions={[5]}
           onSelectionModelChange={(ids) => setSelectedRows(ids)}
           checkboxSelection
+          getRowId={(row) => row._id}
         />
       </Box>
       {selectedRows.length !== 0 && (
