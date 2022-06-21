@@ -10,17 +10,25 @@ import {
   Menu,
   MenuItem,
   Button,
+  Tooltip,
 } from "@mui/material";
 
 import {
+  Close,
   Check,
   MoreHoriz,
   Edit,
   Delete,
   ForwardToInbox,
 } from "@mui/icons-material";
+import { MentorSchemaType, UserType } from "types";
 
-const UserAbout = () => {
+interface Props {
+  user: UserType;
+  mentorInfo?: MentorSchemaType | null;
+}
+
+const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   return (
@@ -53,32 +61,51 @@ const UserAbout = () => {
         </MenuItem>
       </Menu>
       <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
-        <Box flex="1 0 400px" height="400px" borderRadius={5}>
+        <Box
+          flex="1 0 400px"
+          maxWidth="400px"
+          minHeight="300px"
+          maxHeight="400px"
+          borderRadius={5}
+        >
           <img
-            src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131"
+            src={
+              user.avatar?.url ||
+              "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+            }
             alt="user"
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              backgroundPosition: "center",
               borderRadius: 10,
             }}
           />
         </Box>
         <Stack>
-          <Typography variant="h4">Prof. Daniel</Typography>
-          <Typography variant="body1" color="textSecondary">
-            Software Engineer
+          <Typography variant="h4">
+            {user.first_name
+              ? `${user.first_name} ${user.last_name}`
+              : "Unregistered"}
           </Typography>
+          {user.is_mentor && user.signup_completed && (
+            <Typography variant="body1" color="textSecondary">
+              {mentorInfo?.experiences[0]?.role} at{" "}
+              {mentorInfo?.experiences[0]?.company}
+            </Typography>
+          )}
           <Stack direction="row" my={1}>
-            <Chip
-              icon={<Check />}
-              label="Mentor"
-              color="success"
-              variant="outlined"
-            />
+            <Tooltip title={user.verified ? "Verified" : "Not Verified"}>
+              <Chip
+                icon={user.verified ? <Check /> : <Close />}
+                label={user.is_mentor ? "Mentor" : "Mentee"}
+                color={user.verified ? "success" : "error"}
+                variant="outlined"
+              />
+            </Tooltip>
           </Stack>
-          <Stack direction="row" spacing={1} my={1}>
+          <Stack direction="row" spacing={1} my={2}>
             <Button variant="outlined" startIcon={<ForwardToInbox />}>
               Send Mail
             </Button>
@@ -90,23 +117,7 @@ const UserAbout = () => {
             </Button>
           </Stack>
           <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
-            neque, culpa alias facere, esse in quo iusto repellendus illum
-            facilis perspiciatis officia ratione autem nostrum corrupti
-            consectetur odit optio quidem, qui unde beatae necessitatibus
-            deserunt odio nisi. Ea officiis commodi praesentium possimus
-            consequatur error molestiae, ipsum quasi sed aperiam asperiores
-            iusto laboriosam, ullam veritatis deleniti voluptate. Quibusdam
-            provident, perspiciatis voluptatem earum eveniet officia nemo, eius
-            ullam delectus ducimus sint velit repellendus perferendis sequi aut
-            at culpa, eos unde cumque nihil tempore similique. Ducimus,
-            dignissimos sapiente. Cum non ut neque voluptatem provident debitis
-            odio eveniet soluta iste accusamus delectus, quasi, ab magnam omnis
-            excepturi, cupiditate optio blanditiis quos cumque modi itaque.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi animi
-            tempora accusantium iste quisquam. Est enim cum laborum. Ab
-            voluptatibus officia veritatis eius beatae necessitatibus fuga
-            magnam consequuntur aut?
+            {user.bio || "No bio available"}
           </Typography>
         </Stack>
       </Stack>
