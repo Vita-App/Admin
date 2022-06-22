@@ -162,13 +162,13 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 {isLoading ? (
                   <TailSpin width="25px" height="25px" color="#000" />
                 ) : (
-                  "Approve?"
+                  "Approve✔"
                 )}
               </Button>
             )}
             {mentorInfo && !approved && (
               <Button variant="contained" color="error" size="small">
-                Reject?
+                Reject❌
               </Button>
             )}
           </Stack>
