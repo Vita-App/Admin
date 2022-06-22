@@ -5,7 +5,8 @@ import { Tooltip, IconButton, styled } from "@mui/material";
 interface Props {
   icon: React.ReactElement;
   tooltip: string;
-  to: string;
+  to?: string;
+  onClick?: () => {};
 }
 
 const StyledButton = styled(IconButton)({
@@ -17,7 +18,7 @@ const StyledButton = styled(IconButton)({
   },
 });
 
-const ToolbarLink: React.FC<Props> = ({ icon, tooltip, to }) => {
+const ToolbarLink: React.FC<Props> = ({ icon, tooltip, to, onClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
@@ -25,7 +26,7 @@ const ToolbarLink: React.FC<Props> = ({ icon, tooltip, to }) => {
   return (
     <Tooltip title={tooltip} placement="right" arrow>
       <StyledButton
-        onClick={() => navigate(to)}
+        onClick={onClick ? onClick : () => navigate(to!)}
         sx={{
           color: path === to ? "#ef4848" : "gray",
         }}

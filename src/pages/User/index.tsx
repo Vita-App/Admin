@@ -9,6 +9,7 @@ import UserStats from "./UserStats";
 import UserMeetings from "./UserMeetings";
 import { MentorSchemaType, UserType } from "types";
 import { SERVER_URL } from "config.keys";
+import Loader from "components/Loader";
 
 const getUser = async (id?: string) => {
   if (!id) return null;
@@ -39,8 +40,10 @@ const getMentorInfo = async (id?: string) => {
 
 const User = () => {
   const { id } = useParams();
-  const { data: user } = useQuery(["user", id], () => getUser(id));
-  const { data: mentorInfo } = useQuery(
+  const { data: user, isLoading: userLoading } = useQuery(["user", id], () =>
+    getUser(id)
+  );
+  const { data: mentorInfo, isLoading: mentorLoading } = useQuery(
     ["mentorInfo", user],
     () => getMentorInfo(user?.mentor_information),
     {
@@ -50,6 +53,8 @@ const User = () => {
 
   if (!id) return <div />;
   if (!user) return <div />;
+
+  if (userLoading || mentorLoading) return <Loader />;
 
   return (
     <Container>

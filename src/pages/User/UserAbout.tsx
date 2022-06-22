@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { TailSpin } from "react-loader-spinner";
+import axios from "axios";
+import { useQuery } from "react-query";
 
 import {
   Card,
@@ -22,14 +25,45 @@ import {
   ForwardToInbox,
 } from "@mui/icons-material";
 import { MentorSchemaType, UserType } from "types";
+import { SERVER_URL } from "config.keys";
+import { useSnackbar } from "notistack";
 
 interface Props {
   user: UserType;
   mentorInfo?: MentorSchemaType | null;
 }
 
+const approveMentor = async (id?: string) => {
+  if (!id) return;
+
+  const { data } = await axios.put(`${SERVER_URL}/api/approve-mentor`, {
+    id,
+  });
+
+  return data;
+};
+
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { isLoading, isError, data, refetch } = useQuery(
+    ["approveMentor", mentorInfo?._id],
+    () => approveMentor(mentorInfo?._id),
+    {
+      enabled: false,
+    }
+  );
+  const [approved, setApproved] = useState(mentorInfo?.approved);
+
+  useEffect(() => {
+    if (isError) {
+      enqueueSnackbar("Something went wrong!", { variant: "error" });
+    }
+
+    if (data?.success) {
+      setApproved(true);
+    }
+  }, [data, isError, enqueueSnackbar]);
 
   return (
     <Card
@@ -107,7 +141,7 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 variant="outlined"
               />
             </Tooltip>
-            {mentorInfo && mentorInfo.approved && (
+            {mentorInfo && approved && (
               <Tooltip title="Approved">
                 <Chip
                   icon={<Check />}
@@ -117,12 +151,22 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 />
               </Tooltip>
             )}
-            {mentorInfo && !mentorInfo.approved && (
-              <Button variant="contained" color="secondary" size="small">
-                Approve?
+            {mentorInfo && !approved && (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => refetch()}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <TailSpin width="25px" height="25px" color="#000" />
+                ) : (
+                  "Approve?"
+                )}
               </Button>
             )}
-            {mentorInfo && !mentorInfo.approved && (
+            {mentorInfo && !approved && (
               <Button variant="contained" color="error" size="small">
                 Reject?
               </Button>
