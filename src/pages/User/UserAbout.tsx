@@ -89,13 +89,16 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
               ? `${user.first_name} ${user.last_name}`
               : "Unregistered"}
           </Typography>
+          <Typography variant="body1" color="textSecondary">
+            {user.email}
+          </Typography>
           {user.is_mentor && user.signup_completed && (
             <Typography variant="body1" color="textSecondary">
               {mentorInfo?.experiences[0]?.role} at{" "}
               {mentorInfo?.experiences[0]?.company}
             </Typography>
           )}
-          <Stack direction="row" my={1}>
+          <Stack direction="row" my={1} spacing={1}>
             <Tooltip title={user.verified ? "Verified" : "Not Verified"}>
               <Chip
                 icon={user.verified ? <Check /> : <Close />}
@@ -104,6 +107,26 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 variant="outlined"
               />
             </Tooltip>
+            {mentorInfo && mentorInfo.approved && (
+              <Tooltip title="Approved">
+                <Chip
+                  icon={<Check />}
+                  label="Approved"
+                  color="success"
+                  variant="outlined"
+                />
+              </Tooltip>
+            )}
+            {mentorInfo && !mentorInfo.approved && (
+              <Button variant="contained" color="secondary" size="small">
+                Approve?
+              </Button>
+            )}
+            {mentorInfo && !mentorInfo.approved && (
+              <Button variant="contained" color="error" size="small">
+                Reject?
+              </Button>
+            )}
           </Stack>
           <Stack direction="row" spacing={1} my={2}>
             <Button variant="outlined" startIcon={<ForwardToInbox />}>
