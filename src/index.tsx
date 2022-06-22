@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { CssBaseline } from "@mui/material";
 import App from "./App";
 import { PRODUCTION } from "config.keys";
+import { SnackbarProvider } from "notistack";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
@@ -22,7 +23,9 @@ root.render(
     <BrowserRouter>
       <CssBaseline>
         {!PRODUCTION && <ReactQueryDevtools />}
-        <App />
+        <SnackbarProvider maxSnack={3}>
+          <App />
+        </SnackbarProvider>
       </CssBaseline>
     </BrowserRouter>
   </QueryClientProvider>

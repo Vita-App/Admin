@@ -27,6 +27,7 @@ export interface MentorSchemaType {
   linkedIn: string;
   is_mentoring: boolean;
   topics: number[];
+  approved?: boolean;
 }
 
 export interface UserType {
@@ -44,4 +45,9 @@ export interface UserType {
   mentor_information?: string;
   verified?: boolean;
   signup_completed?: boolean;
+}
+
+export interface AdminType {
+  name: string;
+  email: string;
 }
