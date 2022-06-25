@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { TailSpin } from "react-loader-spinner";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 import ConfirmDialog from "components/Modals/ConfirmDialog";
 import {
   Card,
@@ -58,54 +58,31 @@ const rejectMentor = async (id?: string) => {
 };
 
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
+  const [approved, setApproved] = useState(mentorInfo?.approved);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const {
-    isLoading: approveLoading,
-    isError: approveError,
-    data: approveData,
-    refetch: approveRefetch,
-  } = useQuery(
-    ["approveMentor", mentorInfo?._id],
-    () => approveMentor(mentorInfo?._id),
-    {
-      enabled: false,
-    }
-  );
-  const {
-    isLoading: rejectLoading,
-    isError: rejectError,
-    data: rejectData,
-    refetch: rejectRefetch,
-  } = useQuery(["rejectMentor", user._id], () => rejectMentor(user._id), {
-    enabled: false,
-  });
-  const [approved, setApproved] = useState(mentorInfo?.approved);
 
-  useEffect(() => {
-    if (approveError) {
-      enqueueSnackbar("Something went wrong!", { variant: "error" });
-    }
-
-    if (approveData?.success) {
+  const approveMutation = useMutation((id: string) => approveMentor(id), {
+    onSuccess: () => {
       enqueueSnackbar("Email sent to the user!", { variant: "success" });
       setApproved(true);
-    }
-  }, [approveData, approveError, enqueueSnackbar]);
-
-  useEffect(() => {
-    if (rejectError) {
+    },
+    onError: () => {
       enqueueSnackbar("Something went wrong!", { variant: "error" });
-    }
+    },
+  });
 
-    if (rejectData?.success) {
+  const rejectMutation = useMutation((id: string) => rejectMentor(id), {
+    onSuccess: () => {
       enqueueSnackbar("Email sent to the user!", { variant: "success" });
-      setOpen(false);
       navigate("/");
-    }
-  }, [rejectData, rejectError, enqueueSnackbar, navigate]);
+    },
+    onError: () => {
+      enqueueSnackbar("Something went wrong!", { variant: "error" });
+    },
+  });
 
   return (
     <Card
@@ -115,10 +92,10 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <ConfirmDialog
           onClose={() => setOpen(false)}
-          onConfirm={() => rejectRefetch()}
+          onConfirm={() => rejectMutation.mutate(user._id)}
           message="Are you sure your want to reject this user? This user will be deleted from the database!"
           title="Reject Mentor"
-          loading={rejectLoading}
+          loading={rejectMutation.isLoading}
         />
       </Dialog>
       <IconButton
@@ -207,10 +184,10 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => approveRefetch()}
-                disabled={approveLoading}
+                onClick={() => approveMutation.mutate(mentorInfo._id)}
+                disabled={approveMutation.isLoading}
               >
-                {approveLoading ? (
+                {approveMutation.isLoading ? (
                   <TailSpin width="25px" height="25px" color="#000" />
                 ) : (
                   "Approve✔"
