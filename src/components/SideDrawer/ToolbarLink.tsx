@@ -6,7 +6,7 @@ interface Props {
   icon: React.ReactElement;
   tooltip: string;
   to?: string;
-  onClick?: () => {};
+  onClick?: () => void;
 }
 
 const StyledButton = styled(IconButton)({

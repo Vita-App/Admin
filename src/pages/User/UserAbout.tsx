@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { TailSpin } from "react-loader-spinner";
 import axios from "axios";
 import { useMutation } from "react-query";
-import ConfirmDialog from "components/Modals/ConfirmDialog";
+import Button from "components/Button";
 import {
   Card,
   Stack,
@@ -13,9 +12,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Button,
   Tooltip,
-  Dialog,
 } from "@mui/material";
 
 import {
@@ -60,7 +57,6 @@ const rejectMentor = async (id?: string) => {
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
   const [approved, setApproved] = useState(mentorInfo?.approved);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -89,15 +85,6 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
       elevation={1}
       sx={{ bgcolor: "transparent", p: 3, position: "relative" }}
     >
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <ConfirmDialog
-          onClose={() => setOpen(false)}
-          onConfirm={() => rejectMutation.mutate(user._id)}
-          message="Are you sure your want to reject this user? This user will be deleted from the database!"
-          title="Reject Mentor"
-          loading={rejectMutation.isLoading}
-        />
-      </Dialog>
       <IconButton
         sx={{
           position: "absolute",
@@ -181,25 +168,28 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
             )}
             {mentorInfo && !approved && (
               <Button
+                withConfirmation
                 variant="contained"
                 color="secondary"
                 size="small"
                 onClick={() => approveMutation.mutate(mentorInfo._id)}
-                disabled={approveMutation.isLoading}
+                loading={approveMutation.isLoading}
+                title="Approve Mentor"
+                message="Are you sure you want to approve this user? This user will be able to take on sessions with other mentees!"
               >
-                {approveMutation.isLoading ? (
-                  <TailSpin width="25px" height="25px" color="#000" />
-                ) : (
-                  "Approve✔"
-                )}
+                Approve✔
               </Button>
             )}
             {mentorInfo && !approved && (
               <Button
+                withConfirmation
                 variant="contained"
                 color="error"
                 size="small"
-                onClick={() => setOpen(true)}
+                onClick={() => rejectMutation.mutate(user._id)}
+                loading={rejectMutation.isLoading}
+                title="Reject User"
+                message="Are you sure you want to reject this user? This user will be permanently deleted from the database!"
               >
                 Reject❌
               </Button>

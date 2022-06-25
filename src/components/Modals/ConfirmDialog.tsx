@@ -20,7 +20,7 @@ interface Props {
 
 const ConfirmDialog: React.FC<Props> = (props) => {
   return (
-    <DialogContent>
+    <DialogContent sx={{ minWidth: "400px" }}>
       <Box display="flex" justifyContent="center">
         <Avatar
           sx={{
