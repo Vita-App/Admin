@@ -28,6 +28,7 @@ export interface MentorSchemaType {
   is_mentoring: boolean;
   topics: number[];
   approved?: boolean;
+  top_mentor: boolean;
 }
 
 export interface UserType {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Button from "components/Button";
 import {
   Card,
@@ -54,7 +54,17 @@ const rejectMentor = async (id?: string) => {
   return data;
 };
 
+const changeTopMentor = async (id?: string) => {
+  const { data } = await axios.put(`${SERVER_URL}/api/change-topmentor`, {
+    id,
+  });
+
+  return data;
+};
+
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const [approved, setApproved] = useState(mentorInfo?.approved);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -79,6 +89,22 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
       enqueueSnackbar("Something went wrong!", { variant: "error" });
     },
   });
+
+  const changeTopMentorMutation = useMutation(
+    (id: string) => changeTopMentor(id),
+    {
+      onError: () => {
+        enqueueSnackbar("Something went wrong!", { variant: "error" });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("mentorInfo");
+        enqueueSnackbar("An email has been sent to the user!", {
+          variant: "success",
+        });
+        setOpen(false);
+      },
+    }
+  );
 
   return (
     <Card
@@ -192,6 +218,30 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
                 message="Are you sure you want to reject this user? This user will be permanently deleted from the database!"
               >
                 Reject❌
+              </Button>
+            )}
+            {mentorInfo && approved && (
+              <Button
+                withConfirmation
+                variant="contained"
+                color="warning"
+                onClick={() => changeTopMentorMutation.mutate(mentorInfo._id)}
+                size="small"
+                openDialog={open}
+                setOpenDialog={setOpen}
+                loading={changeTopMentorMutation.isLoading}
+                title={
+                  mentorInfo.top_mentor ? "Demote to mentor" : "Make top mentor"
+                }
+                message={
+                  mentorInfo.top_mentor
+                    ? "Are you sure you want to demote this use back to a normal Mentor ?"
+                    : "Are you sure you want to make this user a top mentor?"
+                }
+              >
+                {mentorInfo.top_mentor
+                  ? "Demote back to mentor ⬇"
+                  : "Make Top Mentor ⚡"}
               </Button>
             )}
           </Stack>
