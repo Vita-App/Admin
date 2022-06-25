@@ -20,7 +20,7 @@ axios.defaults.withCredentials = true;
 
 const getAuthUser = async () => {
   const { data } = await axios.get<{ isLoggedIn: boolean; user: AdminType }>(
-    `${SERVER_URL}/api/auth`
+    `${SERVER_URL}/api/admin/auth`
   );
 
   if (data.isLoggedIn) {

@@ -6,14 +6,17 @@ import { Group, Mail, Add, VideoCall, Logout } from "@mui/icons-material";
 import ToolbarLink from "./ToolbarLink";
 import { useSetRecoilState } from "recoil";
 import { authState } from "store";
+import { useNavigate } from "react-router";
 
 const Toolbar = () => {
+  const navigate = useNavigate();
   const setAuthState = useSetRecoilState(authState);
 
   const logout = async () => {
-    await axios.get(`${SERVER_URL}/api/logout`);
+    await axios.get(`${SERVER_URL}/api/admin/logout`);
 
     setAuthState({ isLoggedIn: false, user: null });
+    navigate("/");
   };
 
   return (
