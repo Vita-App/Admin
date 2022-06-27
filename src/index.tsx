@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -8,8 +8,6 @@ import App from "./App";
 import { PRODUCTION } from "config.keys";
 import { RecoilRoot } from "recoil";
 import { SnackbarProvider } from "notistack";
-
-const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +18,7 @@ const queryClient = new QueryClient({
   },
 });
 
-root.render(
+ReactDOM.render(
   <RecoilRoot>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -32,5 +30,6 @@ root.render(
         </CssBaseline>
       </BrowserRouter>
     </QueryClientProvider>
-  </RecoilRoot>
+  </RecoilRoot>,
+  document.getElementById("root")!
 );
