@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { TailSpin } from "react-loader-spinner";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
-import { useQuery } from "react-query";
-
+import { useMutation, useQueryClient } from "react-query";
+import Button from "components/Button";
 import {
   Card,
   Stack,
@@ -12,7 +12,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Button,
   Tooltip,
 } from "@mui/material";
 
@@ -43,27 +42,69 @@ const approveMentor = async (id?: string) => {
   return data;
 };
 
+const rejectMentor = async (id?: string) => {
+  if (!id) return;
+
+  const { data } = await axios.get(`${SERVER_URL}/api/reject-mentor`, {
+    params: {
+      id,
+    },
+  });
+
+  return data;
+};
+
+const changeTopMentor = async (id?: string) => {
+  const { data } = await axios.put(`${SERVER_URL}/api/change-topmentor`, {
+    id,
+  });
+
+  return data;
+};
+
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const [approved, setApproved] = useState(mentorInfo?.approved);
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { isLoading, isError, data, refetch } = useQuery(
-    ["approveMentor", mentorInfo?._id],
-    () => approveMentor(mentorInfo?._id),
+
+  const approveMutation = useMutation((id: string) => approveMentor(id), {
+    onSuccess: () => {
+      enqueueSnackbar("Email sent to the user!", { variant: "success" });
+      setApproved(true);
+    },
+    onError: () => {
+      enqueueSnackbar("Something went wrong!", { variant: "error" });
+    },
+  });
+
+  const rejectMutation = useMutation((id: string) => rejectMentor(id), {
+    onSuccess: () => {
+      enqueueSnackbar("Email sent to the user!", { variant: "success" });
+      navigate("/");
+    },
+    onError: () => {
+      enqueueSnackbar("Something went wrong!", { variant: "error" });
+    },
+  });
+
+  const changeTopMentorMutation = useMutation(
+    (id: string) => changeTopMentor(id),
     {
-      enabled: false,
+      onError: () => {
+        enqueueSnackbar("Something went wrong!", { variant: "error" });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("mentorInfo");
+        enqueueSnackbar("An email has been sent to the user!", {
+          variant: "success",
+        });
+        setOpen(false);
+      },
     }
   );
-  const [approved, setApproved] = useState(mentorInfo?.approved);
-
-  useEffect(() => {
-    if (isError) {
-      enqueueSnackbar("Something went wrong!", { variant: "error" });
-    }
-
-    if (data?.success) {
-      setApproved(true);
-    }
-  }, [data, isError, enqueueSnackbar]);
 
   return (
     <Card
@@ -153,22 +194,54 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
             )}
             {mentorInfo && !approved && (
               <Button
+                withConfirmation
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => refetch()}
-                disabled={isLoading}
+                onClick={() => approveMutation.mutate(mentorInfo._id)}
+                loading={approveMutation.isLoading}
+                title="Approve Mentor"
+                message="Are you sure you want to approve this user? This user will be able to take on sessions with other mentees!"
               >
-                {isLoading ? (
-                  <TailSpin width="25px" height="25px" color="#000" />
-                ) : (
-                  "Approve✔"
-                )}
+                Approve✔
               </Button>
             )}
             {mentorInfo && !approved && (
-              <Button variant="contained" color="error" size="small">
+              <Button
+                withConfirmation
+                variant="contained"
+                color="error"
+                size="small"
+                onClick={() => rejectMutation.mutate(user._id)}
+                loading={rejectMutation.isLoading}
+                title="Reject User"
+                message="Are you sure you want to reject this user? This user will be permanently deleted from the database!"
+              >
                 Reject❌
+              </Button>
+            )}
+            {mentorInfo && approved && (
+              <Button
+                withConfirmation
+                variant="contained"
+                color="warning"
+                onClick={() => changeTopMentorMutation.mutate(mentorInfo._id)}
+                size="small"
+                openDialog={open}
+                setOpenDialog={setOpen}
+                loading={changeTopMentorMutation.isLoading}
+                title={
+                  mentorInfo.top_mentor ? "Demote to mentor" : "Make top mentor"
+                }
+                message={
+                  mentorInfo.top_mentor
+                    ? "Are you sure you want to demote this use back to a normal Mentor ?"
+                    : "Are you sure you want to make this user a top mentor?"
+                }
+              >
+                {mentorInfo.top_mentor
+                  ? "Demote back to mentor ⬇"
+                  : "Make Top Mentor ⚡"}
               </Button>
             )}
           </Stack>

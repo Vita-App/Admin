@@ -28,6 +28,7 @@ export interface MentorSchemaType {
   is_mentoring: boolean;
   topics: number[];
   approved?: boolean;
+  top_mentor: boolean;
 }
 
 export interface UserType {
@@ -50,4 +51,10 @@ export interface UserType {
 export interface AdminType {
   name: string;
   email: string;
+}
+
+export interface BannerType {
+  content: string;
+  show: boolean;
+  height: number;
 }
