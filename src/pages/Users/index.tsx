@@ -90,7 +90,7 @@ const UsersPage = () => {
       headerName: "First Name",
       renderCell: ({ row }) =>
         row.first_name || (
-          <Typography color="red" variant="subtitle2">
+          <Typography color="error.main" variant="subtitle2">
             {!row.verified ? "Not Verified" : "Unregistered"}
           </Typography>
         ),
@@ -100,7 +100,7 @@ const UsersPage = () => {
       headerName: "Last Name",
       renderCell: ({ row }) =>
         row.last_name || (
-          <Typography color="red" variant="subtitle2">
+          <Typography color="error.main" variant="subtitle2">
             {!row.verified ? "Not Verified" : "Unregistered"}
           </Typography>
         ),

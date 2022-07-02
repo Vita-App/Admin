@@ -26,7 +26,7 @@ const ConfirmDialog: React.FC<Props> = (props) => {
           sx={{
             width: "100px",
             height: "100px",
-            backgroundColor: "red",
+            backgroundColor: "error.main",
           }}
         >
           <Warning sx={{ width: "80px", height: "80px" }} />
@@ -34,7 +34,7 @@ const ConfirmDialog: React.FC<Props> = (props) => {
       </Box>
       <Typography
         variant="h4"
-        sx={{ color: "#d32f2f" }}
+        color="error.main"
         textAlign="center"
         gutterBottom
       >
