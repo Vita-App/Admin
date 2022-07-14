@@ -62,6 +62,12 @@ const changeTopMentor = async (id?: string) => {
   return data;
 };
 
+const deleteUser = async (id?: string) => {
+  const { data } = await axios.delete(`${SERVER_URL}/api/delete-user/${id}`);
+
+  return data;
+};
+
 const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
   const [open, setOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
@@ -106,6 +112,20 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
     }
   );
 
+  const deleteMutation = useMutation((id: string) => deleteUser(id), {
+    onError: () => {
+      enqueueSnackbar("We couldn't delete this user. Something Went Wrong!", {
+        variant: "error",
+      });
+    },
+    onSuccess: () => {
+      setAnchorEl(null);
+      queryClient.invalidateQueries("users");
+      enqueueSnackbar("User deleted Successfully!", { variant: "success" });
+      navigate("/");
+    },
+  });
+
   return (
     <Card
       elevation={1}
@@ -131,8 +151,19 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
         <MenuItem onClick={() => setAnchorEl(null)}>
           <Edit color="primary" sx={{ mr: 1 }} /> Edit
         </MenuItem>
-        <MenuItem onClick={() => setAnchorEl(null)}>
-          <Delete color="error" sx={{ mr: 1 }} /> Delete
+        <MenuItem>
+          <Button
+            withConfirmation
+            variant="text"
+            color="error"
+            size="small"
+            onClick={() => deleteMutation.mutate(user._id)}
+            loading={deleteMutation.isLoading}
+            title="Delete User"
+            message="Are you sure you want to delete this user? This user will be permanently deleted from the database!"
+          >
+            <Delete color="error" sx={{ mr: 1 }} /> Delete
+          </Button>
         </MenuItem>
       </Menu>
       <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
