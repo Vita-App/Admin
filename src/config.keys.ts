@@ -1,4 +1,3 @@
-export const PRODUCTION = process.env.NODE_ENV === "production";
-export const SERVER_URL = PRODUCTION
-  ? "https://vitaa-server.com"
-  : "http://localhost:5000";
+export const PRODUCTION = Boolean(process.env.REACT_APP_PRODUCTION);
+export const SERVER_URL =
+  process.env.REACT_APP_SERVER_URL || "http://localhost:5000";
