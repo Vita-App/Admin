@@ -1,15 +1,15 @@
-import React from "react";
-import { useParams } from "react-router";
-import { useQuery } from "react-query";
-import axios from "axios";
-import Container from "components/Container";
-import { Stack, Typography } from "@mui/material";
-import UserAbout from "./UserAbout";
-import UserStats from "./UserStats";
-import UserMeetings from "./UserMeetings";
-import { MentorSchemaType, UserType } from "types";
-import { SERVER_URL } from "config.keys";
-import Loader from "components/Loader";
+import React from 'react';
+import { useParams } from 'react-router';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import Container from 'components/Container';
+import { Stack, Typography } from '@mui/material';
+import UserAbout from './UserAbout';
+import UserStats from './UserStats';
+import UserMeetings from './UserMeetings';
+import { MentorSchemaType, UserType } from 'types';
+import { SERVER_URL } from 'config.keys';
+import Loader from 'components/Loader';
 
 const getUser = async (id?: string) => {
   if (!id) return null;
@@ -32,7 +32,7 @@ const getMentorInfo = async (id?: string) => {
       params: {
         id,
       },
-    }
+    },
   );
 
   return data;
@@ -40,15 +40,15 @@ const getMentorInfo = async (id?: string) => {
 
 const User = () => {
   const { id } = useParams();
-  const { data: user, isLoading: userLoading } = useQuery(["user", id], () =>
-    getUser(id)
+  const { data: user, isLoading: userLoading } = useQuery(['user', id], () =>
+    getUser(id),
   );
   const { data: mentorInfo, isLoading: mentorLoading } = useQuery(
-    ["mentorInfo", user],
+    ['mentorInfo', user],
     () => getMentorInfo(user?.mentor_information),
     {
       enabled: user?.is_mentor,
-    }
+    },
   );
 
   if (!id) return <div />;

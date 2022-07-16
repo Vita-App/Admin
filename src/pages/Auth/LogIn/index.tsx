@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router";
-import { useSnackbar } from "notistack";
-import { useQuery } from "react-query";
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
+import { useSnackbar } from 'notistack';
+import { useQuery } from 'react-query';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Button,
   Card,
@@ -12,10 +12,10 @@ import {
   TextField,
   Typography,
   LinearProgress,
-} from "@mui/material";
-import { VisibilityOff, Visibility } from "@mui/icons-material";
-import Container from "components/Container";
-import { SERVER_URL } from "config.keys";
+} from '@mui/material';
+import { VisibilityOff, Visibility } from '@mui/icons-material';
+import Container from 'components/Container';
+import { SERVER_URL } from 'config.keys';
 
 interface FormData {
   email: string;
@@ -39,11 +39,11 @@ const Auth = () => {
     getValues,
   } = useForm<FormData>();
   const { isLoading, refetch, data, isError } = useQuery(
-    ["login"],
+    ['login'],
     async () => await authenticateUser(getValues()),
     {
       enabled: false,
-    }
+    },
   );
 
   const onSubmit = () => {
@@ -53,13 +53,13 @@ const Auth = () => {
   useEffect(() => {
     if (data) {
       enqueueSnackbar(
-        "We have sent an otp to your email. Kindly enter your otp here",
+        'We have sent an otp to your email. Kindly enter your otp here',
         {
-          variant: "success",
-        }
+          variant: 'success',
+        },
       );
 
-      navigate("/otp", { state: getValues().email });
+      navigate('/otp', { state: getValues().email });
     }
   }, [data, navigate, enqueueSnackbar, getValues]);
 
@@ -70,17 +70,16 @@ const Auth = () => {
       </Typography>
       <Card
         elevation={6}
-        sx={{ minWidth: "400px", py: 10, px: 5, position: "relative" }}
+        sx={{ minWidth: '400px', py: 10, px: 5, position: 'relative' }}
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        noValidate
-      >
+        noValidate>
         {isLoading && (
           <LinearProgress
             sx={{
-              position: "absolute",
+              position: 'absolute',
               top: 0,
-              width: "100%",
+              width: '100%',
               left: 0,
             }}
             variant="indeterminate"
@@ -91,13 +90,13 @@ const Auth = () => {
             name="email"
             control={control}
             defaultValue=""
-            rules={{ required: "Email is required" }}
+            rules={{ required: 'Email is required' }}
             render={({ field }) => (
               <TextField
                 {...field}
                 label="Email"
                 error={Boolean(errors.email)}
-                helperText={errors.email?.message || ""}
+                helperText={errors.email?.message || ''}
               />
             )}
           />
@@ -105,12 +104,12 @@ const Auth = () => {
             name="password"
             control={control}
             defaultValue=""
-            rules={{ required: "Password is required" }}
+            rules={{ required: 'Password is required' }}
             render={({ field }) => (
               <TextField
                 {...field}
                 label="Password"
-                type={visibile ? "text" : "password"}
+                type={visibile ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (
                     <IconButton onClick={() => setVisibile(!visibile)}>
@@ -132,8 +131,7 @@ const Auth = () => {
             variant="contained"
             color="error"
             type="submit"
-            disabled={isLoading}
-          >
+            disabled={isLoading}>
             Sign in
           </Button>
         </Stack>

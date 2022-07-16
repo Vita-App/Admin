@@ -1,6 +1,6 @@
-import React from "react";
-import { useNavigate, useLocation } from "react-router";
-import { Tooltip, IconButton, styled } from "@mui/material";
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router';
+import { Tooltip, IconButton, styled } from '@mui/material';
 
 interface Props {
   icon: React.ReactElement;
@@ -10,11 +10,11 @@ interface Props {
 }
 
 const StyledButton = styled(IconButton)({
-  "&": {
-    transition: "all 0.2s ease-in-out",
+  '&': {
+    transition: 'all 0.2s ease-in-out',
   },
-  "&:hover": {
-    color: "#ef4848",
+  '&:hover': {
+    color: '#ef4848',
   },
 });
 
@@ -28,9 +28,8 @@ const ToolbarLink: React.FC<Props> = ({ icon, tooltip, to, onClick }) => {
       <StyledButton
         onClick={onClick ? onClick : () => navigate(to!)}
         sx={{
-          color: path === to ? "#ef4848" : "gray",
-        }}
-      >
+          color: path === to ? '#ef4848' : 'gray',
+        }}>
         {icon}
       </StyledButton>
     </Tooltip>

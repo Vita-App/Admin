@@ -1,8 +1,6 @@
-import React from "react";
-import Container from "components/Container";
+import React from 'react';
+import Container from 'components/Container';
 
-const MeetingsPage = () => {
-  return <Container>MeetingsPage</Container>;
-};
+const MeetingsPage = () => <Container>MeetingsPage</Container>;
 
 export default MeetingsPage;

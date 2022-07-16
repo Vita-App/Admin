@@ -1,7 +1,7 @@
 enum UserStatus {
-  Active = "active",
-  Ban = "ban",
-  Restrict = "restrict",
+  Active = 'active',
+  Ban = 'ban',
+  Restrict = 'restrict',
 }
 
 export interface ExperienceType {

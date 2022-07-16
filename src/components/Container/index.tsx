@@ -1,5 +1,5 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React from 'react';
+import { Box } from '@mui/material';
 
 interface Props {
   children: any;
@@ -14,8 +14,7 @@ const Container: React.FC<Props> = ({ children, centered = false }) => {
         display="flex"
         flexDirection="column"
         alignItems="center"
-        justifyContent="center"
-      >
+        justifyContent="center">
         {children}
       </Box>
     );

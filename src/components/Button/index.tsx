@@ -1,6 +1,6 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button as MuiButton, Dialog, ButtonProps } from "@mui/material";
-import ConfirmationModal from "components/Modals/ConfirmDialog";
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Button as MuiButton, Dialog, ButtonProps } from '@mui/material';
+import ConfirmationModal from 'components/Modals/ConfirmDialog';
 
 interface Props extends ButtonProps {
   onClick?: () => void;
@@ -48,8 +48,7 @@ const Button: React.FC<Props> = ({
             setOpen(true);
             setOpenDialog && setOpenDialog(true);
           }}
-          {...props}
-        >
+          {...props}>
           {children}
         </MuiButton>
       </>

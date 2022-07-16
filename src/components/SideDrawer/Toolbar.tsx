@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { SERVER_URL } from "config.keys";
-import { Stack, IconButton, Dialog } from "@mui/material";
-import ConfirmDialog from "components/Modals/ConfirmDialog";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { SERVER_URL } from 'config.keys';
+import { Stack, IconButton, Dialog } from '@mui/material';
+import ConfirmDialog from 'components/Modals/ConfirmDialog';
 import {
   Group,
   Mail,
@@ -10,11 +10,11 @@ import {
   VideoCall,
   Logout,
   Settings,
-} from "@mui/icons-material";
-import ToolbarLink from "./ToolbarLink";
-import { useSetRecoilState } from "recoil";
-import { authState } from "store";
-import { useNavigate } from "react-router";
+} from '@mui/icons-material';
+import ToolbarLink from './ToolbarLink';
+import { useSetRecoilState } from 'recoil';
+import { authState } from 'store';
+import { useNavigate } from 'react-router';
 
 const Toolbar = () => {
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const Toolbar = () => {
     setLoading(false);
     setAuthState({ isLoggedIn: false, user: null });
     setOpen(false);
-    navigate("/");
+    navigate('/');
   };
 
   return (
@@ -54,14 +54,13 @@ const Toolbar = () => {
       <IconButton
         onClick={() => {}}
         sx={{
-          backgroundColor: "#ef4848",
-          color: "white",
-          "&:hover": {
-            bgcolor: "#e03030",
-            color: "white",
+          backgroundColor: '#ef4848',
+          color: 'white',
+          '&:hover': {
+            bgcolor: '#e03030',
+            color: 'white',
           },
-        }}
-      >
+        }}>
         <Add />
       </IconButton>
     </Stack>

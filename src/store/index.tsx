@@ -1,5 +1,5 @@
-import { atom } from "recoil";
-import { AdminType } from "types";
+import { atom } from 'recoil';
+import { AdminType } from 'types';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -7,7 +7,7 @@ interface AuthState {
 }
 
 export const authState = atom<AuthState>({
-  key: "authState",
+  key: 'authState',
   default: {
     user: null,
     isLoggedIn: false,

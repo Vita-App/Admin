@@ -1,26 +1,26 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import { useQuery } from "react-query";
-import { Routes, Route } from "react-router";
-import { Box } from "@mui/material";
-import Loader from "components/Loader";
-import SideDrawer from "components/SideDrawer";
-import UsersPage from "pages/Users";
-import MeetingsPage from "pages/Meetings";
-import EmailsPage from "pages/Emails";
-import SettingsPage from "pages/Settings";
-import UserPage from "pages/User";
-import { LogIn, OtpPage } from "pages/Auth";
-import { SERVER_URL } from "config.keys";
-import { AdminType } from "types";
-import { useRecoilState } from "recoil";
-import { authState } from "store";
+import React, { useEffect } from 'react';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import { Routes, Route } from 'react-router';
+import { Box } from '@mui/material';
+import Loader from 'components/Loader';
+import SideDrawer from 'components/SideDrawer';
+import UsersPage from 'pages/Users';
+import MeetingsPage from 'pages/Meetings';
+import EmailsPage from 'pages/Emails';
+import SettingsPage from 'pages/Settings';
+import UserPage from 'pages/User';
+import { LogIn, OtpPage } from 'pages/Auth';
+import { SERVER_URL } from 'config.keys';
+import { AdminType } from 'types';
+import { useRecoilState } from 'recoil';
+import { authState } from 'store';
 
 axios.defaults.withCredentials = true;
 
 const getAuthUser = async () => {
   const { data } = await axios.get<{ isLoggedIn: boolean; user: AdminType }>(
-    `${SERVER_URL}/api/admin/auth`
+    `${SERVER_URL}/api/admin/auth`,
   );
 
   if (data.isLoggedIn) {
@@ -31,7 +31,7 @@ const getAuthUser = async () => {
 };
 
 const App = () => {
-  const { isLoading, data: user } = useQuery(["auth"], getAuthUser);
+  const { isLoading, data: user } = useQuery(['auth'], getAuthUser);
   const [userState, setAuthState] = useRecoilState(authState);
 
   useEffect(() => {
@@ -49,12 +49,11 @@ const App = () => {
     return (
       <Box
         sx={{
-          minHeight: "100vh",
-          bgcolor: "rgb(245, 245, 245)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+          minHeight: '100vh',
+          bgcolor: 'rgb(245, 245, 245)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
         <Routes>
           <Route path="/" element={<LogIn />} />
           <Route path="/otp" element={<OtpPage />} />
@@ -68,12 +67,11 @@ const App = () => {
       <SideDrawer />
       <Box
         sx={{
-          minHeight: "100vh",
-          bgcolor: "rgb(245, 245, 245)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+          minHeight: '100vh',
+          bgcolor: 'rgb(245, 245, 245)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
         <Routes>
           <Route path="/" element={<UsersPage />} />
           <Route path="/user/:id" element={<UserPage />} />

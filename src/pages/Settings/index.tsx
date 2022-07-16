@@ -1,18 +1,18 @@
-import React from "react";
-import { useSearchParams } from "react-router-dom";
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import Container from "components/Container";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import BannerSettings from "pages/Settings/Banner";
-import { SERVER_URL } from "config.keys";
-import { Typography } from "@mui/material";
+import Container from 'components/Container';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import BannerSettings from 'pages/Settings/Banner';
+import { SERVER_URL } from 'config.keys';
+import { Typography } from '@mui/material';
 
 const SettingsPage = () => {
   const [searchParams] = useSearchParams();
 
-  const success = searchParams.get("success") === "true";
-  const error = searchParams.get("error");
+  const success = searchParams.get('success') === 'true';
+  const error = searchParams.get('error');
 
   return (
     <Container>
@@ -22,8 +22,7 @@ const SettingsPage = () => {
           variant="contained"
           onClick={() =>
             (window.location.href = `${SERVER_URL}/api/get-refresh-token`)
-          }
-        >
+          }>
           Generate Refresh Token
         </Button>
         {success && (

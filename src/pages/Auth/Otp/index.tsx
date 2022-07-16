@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { TailSpin } from "react-loader-spinner";
-import axios from "axios";
-import { useQuery } from "react-query";
-import Container from "components/Container";
-import { Button, Stack, TextField, Typography } from "@mui/material";
-import { useSetRecoilState } from "recoil";
-import { useSnackbar } from "notistack";
-import { authState } from "store";
-import { useLocation, useNavigate } from "react-router";
-import { SERVER_URL } from "config.keys";
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { TailSpin } from 'react-loader-spinner';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import Container from 'components/Container';
+import { Button, Stack, TextField, Typography } from '@mui/material';
+import { useSetRecoilState } from 'recoil';
+import { useSnackbar } from 'notistack';
+import { authState } from 'store';
+import { useLocation, useNavigate } from 'react-router';
+import { SERVER_URL } from 'config.keys';
 
 const verifyOtp = async (otp: string, email?: string) => {
   const { data } = await axios.post(`${SERVER_URL}/api/admin/verify-otp`, {
@@ -22,14 +22,14 @@ const verifyOtp = async (otp: string, email?: string) => {
 const OtpPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState('');
   const { enqueueSnackbar } = useSnackbar();
   const { isLoading, data, isError, refetch } = useQuery(
-    ["verifyOtp", otp],
+    ['verifyOtp', otp],
     () => verifyOtp(otp, state as string),
     {
       enabled: false,
-    }
+    },
   );
   const setAuthState = useSetRecoilState(authState);
   const ref1 = useRef<HTMLInputElement>();
@@ -42,13 +42,13 @@ const OtpPage = () => {
   const refs = useMemo(() => [ref1, ref2, ref3, ref4, ref5, ref6], []);
 
   const onChange = (index: number) => {
-    if (!Boolean(refs[index].current!.value)) {
+    if (!refs[index].current!.value) {
       refs[index - 1 < 0 ? 5 : index - 1].current!.focus();
     } else {
       refs[(index + 1) % 6].current!.focus();
     }
 
-    setOtp(refs.map((ref) => ref.current!.value).join(""));
+    setOtp(refs.map((ref) => ref.current!.value).join(''));
   };
 
   const onSubmit = () => {
@@ -62,11 +62,11 @@ const OtpPage = () => {
         isLoggedIn: true,
         user: data.user,
       });
-      navigate("/");
+      navigate('/');
     }
 
     if (isError) {
-      enqueueSnackbar("Invalid or expired otp", { variant: "error" });
+      enqueueSnackbar('Invalid or expired otp', { variant: 'error' });
     }
   }, [data, isError, enqueueSnackbar, setAuthState, navigate]);
 
@@ -79,14 +79,14 @@ const OtpPage = () => {
             key={index}
             inputRef={ref}
             sx={{
-              width: "3rem",
+              width: '3rem',
             }}
             InputProps={{
               inputProps: {
                 maxLength: 1,
                 style: {
-                  textAlign: "center",
-                  fontSize: "1.5rem",
+                  textAlign: 'center',
+                  fontSize: '1.5rem',
                 },
               },
             }}
@@ -98,12 +98,11 @@ const OtpPage = () => {
         variant="contained"
         color="success"
         onClick={onSubmit}
-        disabled={otp.length !== 6 || isLoading}
-      >
+        disabled={otp.length !== 6 || isLoading}>
         {isLoading ? (
           <TailSpin width="25px" height="25px" color="#000" />
         ) : (
-          "Submit"
+          'Submit'
         )}
       </Button>
     </Container>
