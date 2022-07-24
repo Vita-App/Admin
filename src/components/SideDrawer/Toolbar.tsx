@@ -3,14 +3,7 @@ import axios from 'axios';
 import { SERVER_URL } from 'config.keys';
 import { Stack, IconButton, Dialog } from '@mui/material';
 import ConfirmDialog from 'components/Modals/ConfirmDialog';
-import {
-  Group,
-  Mail,
-  Add,
-  VideoCall,
-  Logout,
-  Settings,
-} from '@mui/icons-material';
+import { Group, Add, VideoCall, Logout, Settings } from '@mui/icons-material';
 import ToolbarLink from './ToolbarLink';
 import { useSetRecoilState } from 'recoil';
 import { authState } from 'store';
@@ -44,7 +37,6 @@ const Toolbar = () => {
       </Dialog>
       <ToolbarLink icon={<Group />} tooltip="Users" to="/" />
       <ToolbarLink icon={<VideoCall />} tooltip="Meetings" to="/meetings" />
-      <ToolbarLink icon={<Mail />} tooltip="Emails" to="/emails" />
       <ToolbarLink icon={<Settings />} tooltip="Settings" to="/settings" />
       <ToolbarLink
         icon={<Logout />}

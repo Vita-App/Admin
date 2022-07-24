@@ -99,7 +99,7 @@ const UsersPage = () => {
       renderCell: ({ row }) =>
         row.last_name || (
           <Typography color="error.main" variant="subtitle2">
-            {!row.verified ? 'Not Verified' : 'Unregistered'}
+            {!row.verified ? 'Not Verified' : '_'}
           </Typography>
         ),
     },

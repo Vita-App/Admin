@@ -58,3 +58,36 @@ export interface BannerType {
   show: boolean;
   height: number;
 }
+
+interface BookingUser {
+  _id: string;
+  first_name: string;
+  last_name: string;
+}
+
+interface Session {
+  email?: string;
+  topic?: string;
+  description?: string;
+  status?: 'rated' | 'unrated';
+  rating?: number;
+}
+export interface MeetingType {
+  _id: string;
+  mentor: BookingUser;
+  mentee: BookingUser;
+  mentor_email: string;
+  mentee_email: string;
+  start_date: Date;
+  end_date: Date;
+  google_meeting_link: string;
+  event_id: string;
+  status: 'accepted' | 'cancelled' | 'waiting';
+  session: Session;
+}
+
+interface StatsType {
+  likes: number;
+  reports: number;
+  meetings: number;
+}

@@ -1,70 +1,99 @@
 import React from 'react';
 
-import { Box } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { MeetingType } from 'types';
 
-const columns: GridColDef[] = [
+interface IProps {
+  meetings?: MeetingType[];
+  loading?: boolean;
+}
+
+const columns: GridColDef<MeetingType>[] = [
   {
-    field: 'sno',
-    headerName: 'S.No',
-    width: 100,
-  },
-  {
-    field: 'With',
-    headerName: 'With',
+    field: 'mentee.name',
+    headerName: 'Mentee',
     width: 200,
+    renderCell: ({ row }) => (
+      <Stack>
+        <Typography variant="body1">
+          {row.mentee.first_name} {row.mentee.last_name}
+        </Typography>
+        <Typography variant="caption">{row.mentee_email}</Typography>
+      </Stack>
+    ),
   },
   {
-    field: 'Date',
+    field: 'mentor.name',
+    headerName: 'Mentor',
+    width: 200,
+    renderCell: ({ row }) => (
+      <Stack>
+        <Typography variant="body1">
+          {row.mentor.first_name} {row.mentor.last_name}
+        </Typography>
+        <Typography variant="caption">{row.mentor_email}</Typography>
+      </Stack>
+    ),
+  },
+  {
+    field: 'date',
     headerName: 'Date',
     width: 200,
+    renderCell: ({ row }) => (
+      <Stack>
+        <Typography variant="body1">
+          {new Date(row.start_date).toLocaleDateString()}
+        </Typography>
+        <Typography variant="caption">
+          {new Date(row.start_date).toLocaleTimeString()} -{' '}
+          {new Date(row.end_date).toLocaleTimeString()}
+        </Typography>
+      </Stack>
+    ),
   },
   {
-    field: 'From',
-    headerName: 'From',
-    width: 200,
-  },
-  {
-    field: 'To',
-    headerName: 'To',
-    width: 200,
-  },
-  {
-    field: 'Status',
+    field: 'status',
     headerName: 'Status',
+  },
+  {
+    field: 'meetingLink',
+    headerName: 'Meeting Link',
+    renderCell: ({ row }) => (
+      <Button
+        variant="contained"
+        color="success"
+        disabled={!Boolean(row.google_meeting_link)}
+        onClick={() => (window.location.pathname = row.google_meeting_link)}>
+        Join
+      </Button>
+    ),
+  },
+  {
     width: 200,
+    field: 'feedback',
+    headerName: 'Feedback',
+    renderCell: ({ row }) => (
+      <Button
+        variant="contained"
+        color="warning"
+        disabled={!Boolean(row.session.rating)}>
+        View Feedback
+      </Button>
+    ),
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    sno: 1,
-    With: 'Jane Smith',
-    Date: '11/6/2022',
-    From: '12:00 PM',
-    To: '12:30 PM',
-    Status: 'Upcoming',
-  },
-  {
-    id: 2,
-    sno: 2,
-    With: 'John Doe',
-    Date: '5/6/2022',
-    From: '12:00 PM',
-    To: '1:00 PM',
-    Status: 'Completed',
-  },
-];
-
-const UserMeetings = () => (
+const UserMeetings: React.FC<IProps> = ({ meetings, loading }) => (
   <Box mb={3}>
     <DataGrid
+      loading={loading}
       columns={columns}
-      rows={rows}
+      rows={meetings || []}
       autoHeight
       pageSize={5}
       rowsPerPageOptions={[5]}
+      getRowId={(row) => row._id}
     />
   </Box>
 );
