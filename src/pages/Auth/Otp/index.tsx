@@ -23,6 +23,7 @@ const OtpPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [otp, setOtp] = useState('');
+  const [selected, setSelected] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
   const { isLoading, data, isError, refetch } = useQuery(
     ['verifyOtp', otp],
@@ -43,11 +44,10 @@ const OtpPage = () => {
 
   const onChange = (index: number) => {
     if (!refs[index].current!.value) {
-      refs[index - 1 < 0 ? 5 : index - 1].current!.focus();
-    } else {
-      refs[(index + 1) % 6].current!.focus();
+      return;
     }
 
+    setSelected(index !== 5 ? index + 1 : index);
     setOtp(refs.map((ref) => ref.current!.value).join(''));
   };
 
@@ -70,6 +70,33 @@ const OtpPage = () => {
     }
   }, [data, isError, enqueueSnackbar, setAuthState, navigate]);
 
+  useEffect(() => {
+    refs[selected].current!.focus();
+  }, [selected]);
+
+  useEffect(() => {
+    const onPaste = (e: ClipboardEvent) => {
+      const paste = e.clipboardData?.getData('text');
+
+      if (!paste) return;
+
+      if (paste.length !== 6) return;
+
+      const otpArray = paste.split('');
+      otpArray.forEach((otp, index) => {
+        refs[index].current!.value = otp;
+      });
+
+      refs[5].current!.focus();
+      setOtp(paste);
+    };
+
+    document.addEventListener('paste', onPaste);
+    return () => {
+      document.removeEventListener('paste', onPaste);
+    };
+  }, []);
+
   return (
     <Container centered>
       <Typography variant="h4">Enter your OTP here</Typography>
@@ -89,6 +116,11 @@ const OtpPage = () => {
                   fontSize: '1.5rem',
                 },
               },
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace') {
+                setSelected(index === 0 ? 5 : index - 1);
+              }
             }}
             onChange={() => onChange(index)}
           />
