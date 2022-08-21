@@ -66,9 +66,13 @@ const User = () => {
       enabled: user?.is_mentor,
     },
   );
-  const statQuery = useQuery(['stats', id], () => getMentorStats(id), {
-    enabled: user?.is_mentor,
-  });
+  const statQuery = useQuery(
+    ['stats', user?.mentor_information],
+    () => getMentorStats(user?.mentor_information),
+    {
+      enabled: user?.is_mentor,
+    },
+  );
   const meetingsQuery = useQuery(['meetings', id], () => getUserMeetings(id));
 
   if (!id) return <div />;

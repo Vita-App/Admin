@@ -25,6 +25,7 @@ export interface MentorSchemaType {
   expertise: string[];
   languages: string[];
   linkedIn: string;
+  twitter?: string;
   is_mentoring: boolean;
   topics: number[];
   approved?: boolean;

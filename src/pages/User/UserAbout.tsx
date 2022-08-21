@@ -22,6 +22,8 @@ import {
   Edit,
   Delete,
   ForwardToInbox,
+  LinkedIn,
+  Twitter,
 } from '@mui/icons-material';
 import { MentorSchemaType, UserType } from 'types';
 import { SERVER_URL } from 'config.keys';
@@ -200,6 +202,28 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
               {mentorInfo?.experiences[0]?.company}
             </Typography>
           )}
+          <Stack direction="row">
+            {mentorInfo?.linkedIn && (
+              <IconButton
+                target="_blank"
+                href={mentorInfo?.linkedIn}
+                aria-label="linkedIn"
+                size="large"
+                color="primary">
+                <LinkedIn fontSize="inherit" />
+              </IconButton>
+            )}
+            {mentorInfo?.twitter && (
+              <IconButton
+                target="_blank"
+                href={mentorInfo?.twitter}
+                aria-label="linkedIn"
+                size="large"
+                color="primary">
+                <Twitter fontSize="inherit" />
+              </IconButton>
+            )}
+          </Stack>
           <Stack direction="row" my={1} spacing={1}>
             <Tooltip title={user.verified ? 'Verified' : 'Not Verified'}>
               <Chip
