@@ -92,7 +92,7 @@ const UsersPage = () => {
       renderCell: ({ row }) =>
         row.first_name || (
           <Typography color="error.main" variant="subtitle2">
-            {!row.verified ? 'Not Verified' : 'Unregistered'}
+            {!row.verified ? 'Not Verified' : '_'}
           </Typography>
         ),
     },
@@ -110,6 +110,17 @@ const UsersPage = () => {
       field: 'email',
       headerName: 'Email',
       width: 250,
+    },
+    {
+      field: 'signup_completed',
+      headerName: 'Signup Completed',
+      width: 180,
+      renderCell: (params) =>
+        params.row.signup_completed ? (
+          <Check color="success" />
+        ) : (
+          <Close color="error" />
+        ),
     },
     {
       field: 'mentor',
@@ -159,7 +170,7 @@ const UsersPage = () => {
     {
       field: 'View Details',
       headerName: '',
-      width: 300,
+      width: 200,
       renderCell: (params) => (
         <Button
           variant="outlined"
@@ -228,14 +239,16 @@ const UsersPage = () => {
                 color="primary"
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setRows(users.filter((user: UserType) => !user.first_name));
+                    setRows(
+                      users.filter((user: UserType) => !user.signup_completed),
+                    );
                   } else {
                     setRows(users);
                   }
                 }}
               />
             }
-            label="Unregistered"
+            label="Signup incomplete"
           />
           <FormControlLabel
             control={
@@ -260,7 +273,10 @@ const UsersPage = () => {
                   if (e.target.checked) {
                     setRows(
                       users.filter(
-                        (user: UserType) => user.is_mentor && !user.approved,
+                        (user: UserType) =>
+                          user.is_mentor &&
+                          !user.approved &&
+                          user.signup_completed,
                       ),
                     );
                   } else {

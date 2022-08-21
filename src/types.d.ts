@@ -51,6 +51,7 @@ export interface UserType {
   approved?: boolean;
   top_mentor?: boolean;
   experiences?: ExperienceType[];
+  signup_completed?: boolean;
 }
 
 export interface AdminType {
