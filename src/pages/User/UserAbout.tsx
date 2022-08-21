@@ -202,6 +202,11 @@ const UserAbout: React.FC<Props> = ({ user, mentorInfo }) => {
               {mentorInfo?.experiences[0]?.company}
             </Typography>
           )}
+          {user.graduation_year && (
+            <Typography variant="body1" color="textSecondary">
+              Graduation - {user.graduation_year}
+            </Typography>
+          )}
           <Stack direction="row">
             {mentorInfo?.linkedIn && (
               <IconButton

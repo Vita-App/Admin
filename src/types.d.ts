@@ -34,6 +34,7 @@ export interface MentorSchemaType {
 
 export interface UserType {
   _id: string;
+  graduation_year?: string;
   email: string;
   first_name: string;
   last_name: string;
