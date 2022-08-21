@@ -214,14 +214,14 @@ const UsersPage = () => {
         />
       </Dialog>
       <Stack
-        direction={{ xs: 'column', sm: 'row' }}
+        direction={{ xs: 'column', md: 'row' }}
         justifyContent="space-between"
         alignItems="center"
         mb={2}>
         <Typography variant="h3" gutterBottom>
           Users
         </Typography>
-        <Stack direction="row" alignItems="center">
+        <Stack direction={{ xs: 'column', md: 'row' }} alignItems="center">
           <FormControlLabel
             control={
               <Checkbox
