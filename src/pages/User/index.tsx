@@ -39,6 +39,8 @@ const getMentorInfo = async (id?: string) => {
 };
 
 const getMentorStats = async (id?: string) => {
+  if (!id) return null;
+
   const { data } = await axios.get<StatsType>(
     `${SERVER_URL}/api/get-mentor-stats/${id}`,
   );

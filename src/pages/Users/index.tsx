@@ -23,6 +23,8 @@ import ConfirmDialog from 'components/Modals/ConfirmDialog';
 // import { users } from "data";
 import { SERVER_URL } from 'config.keys';
 import { UserType } from 'types';
+import { useRecoilState } from 'recoil';
+import { usersTableState } from 'store';
 
 enum UserStatus {
   Active = 'active',
@@ -49,6 +51,7 @@ const getUsers = async () => {
 
 const UsersPage = () => {
   const { isLoading, data: users } = useQuery(['users'], getUsers);
+  const [tableState, setTableState] = useRecoilState(usersTableState);
   const [rows, setRows] = useState<UserType[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -184,7 +187,13 @@ const UsersPage = () => {
       (user) =>
         user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
         user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase()),
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.experiences?.some((exp) =>
+          exp.company.toLowerCase().includes(search.toLowerCase()),
+        ) ||
+        user.experiences?.some((exp) =>
+          exp.role.toLowerCase().includes(search.toLowerCase()),
+        ),
     );
 
     setRows(filteredRows);
@@ -243,6 +252,44 @@ const UsersPage = () => {
             }
             label="Only Mentors"
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setRows(
+                      users.filter(
+                        (user: UserType) => user.is_mentor && !user.approved,
+                      ),
+                    );
+                  } else {
+                    setRows(users);
+                  }
+                }}
+              />
+            }
+            label="Unapproved Mentors"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setRows(
+                      users.filter(
+                        (user: UserType) => user.is_mentor && user.top_mentor,
+                      ),
+                    );
+                  } else {
+                    setRows(users);
+                  }
+                }}
+              />
+            }
+            label="Top Mentors"
+          />
           <TextField
             inputRef={searchRef}
             label="Search"
@@ -265,8 +312,15 @@ const UsersPage = () => {
           columns={columns}
           rows={rows}
           autoHeight
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          page={tableState.page}
+          pageSize={tableState.pageSize}
+          onPageSizeChange={(newPageSize) =>
+            setTableState((prev) => ({ ...prev, pageSize: newPageSize }))
+          }
+          onPageChange={(newPage) =>
+            setTableState((prev) => ({ ...prev, page: newPage }))
+          }
+          rowsPerPageOptions={[5, 10, 20]}
           onSelectionModelChange={(ids) => setSelectedRows(ids)}
           checkboxSelection
           getRowId={(row) => row._id}

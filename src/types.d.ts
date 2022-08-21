@@ -47,6 +47,9 @@ export interface UserType {
   mentor_information?: string;
   verified?: boolean;
   signup_completed?: boolean;
+  approved?: boolean;
+  top_mentor?: boolean;
+  experiences?: ExperienceType[];
 }
 
 export interface AdminType {

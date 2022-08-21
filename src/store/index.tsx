@@ -13,3 +13,11 @@ export const authState = atom<AuthState>({
     isLoggedIn: false,
   },
 });
+
+export const usersTableState = atom({
+  key: 'usersTableState',
+  default: {
+    pageSize: 10,
+    page: 0,
+  },
+});
