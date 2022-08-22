@@ -24,7 +24,7 @@ import ConfirmDialog from 'components/Modals/ConfirmDialog';
 import { SERVER_URL } from 'config.keys';
 import { UserType } from 'types';
 import { useRecoilState } from 'recoil';
-import { usersTableState } from 'store';
+import { filterOptionsState, usersTableState } from 'store';
 
 enum UserStatus {
   Active = 'active',
@@ -51,6 +51,7 @@ const getUsers = async () => {
 
 const UsersPage = () => {
   const { isLoading, data: users } = useQuery(['users'], getUsers);
+  const [filters, setFilters] = useRecoilState(filterOptionsState);
   const [tableState, setTableState] = useRecoilState(usersTableState);
   const [rows, setRows] = useState<UserType[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -185,30 +186,64 @@ const UsersPage = () => {
     },
   ];
 
+  const applyFilters = () => {
+    if (!users) return;
+
+    let filteredRows = users;
+
+    const {
+      search,
+      topMentors,
+      unapprovedMentors,
+      onlyMentors,
+      signupIncomplete,
+    } = filters;
+
+    if (search) {
+      filteredRows = users.filter(
+        (user) =>
+          user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+          user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase()) ||
+          user.experiences?.some((exp) =>
+            exp.company.toLowerCase().includes(search.toLowerCase()),
+          ) ||
+          user.experiences?.some((exp) =>
+            exp.role.toLowerCase().includes(search.toLowerCase()),
+          ),
+      );
+    }
+
+    if (onlyMentors) {
+      filteredRows = filteredRows.filter((user) => user.is_mentor);
+    }
+
+    if (topMentors) {
+      filteredRows = filteredRows.filter((user) => user.top_mentor);
+    }
+
+    if (unapprovedMentors) {
+      filteredRows = filteredRows.filter(
+        (user) => user.is_mentor && !user.approved && user.signup_completed,
+      );
+    }
+
+    if (signupIncomplete) {
+      filteredRows = filteredRows.filter((user) => !user.signup_completed);
+    }
+
+    setRows(filteredRows);
+  };
+
   useEffect(() => {
     setRows(users || []);
   }, [users]);
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters]);
+
   if (!users) return <div />;
-
-  const onSearch = () => {
-    const search = searchRef.current!.value;
-
-    const filteredRows = users.filter(
-      (user) =>
-        user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
-        user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase()) ||
-        user.experiences?.some((exp) =>
-          exp.company.toLowerCase().includes(search.toLowerCase()),
-        ) ||
-        user.experiences?.some((exp) =>
-          exp.role.toLowerCase().includes(search.toLowerCase()),
-        ),
-    );
-
-    setRows(filteredRows);
-  };
 
   return (
     <Container>
@@ -237,14 +272,16 @@ const UsersPage = () => {
             control={
               <Checkbox
                 color="primary"
+                checked={filters.signupIncomplete}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setRows(
-                      users.filter((user: UserType) => !user.signup_completed),
-                    );
-                  } else {
-                    setRows(users);
-                  }
+                  setFilters((prev) => ({
+                    ...prev,
+                    signupIncomplete: e.target.checked,
+                    topMentors: e.target.checked ? false : prev.topMentors,
+                    unapprovedMentors: e.target.checked
+                      ? false
+                      : prev.unapprovedMentors,
+                  }));
                 }}
               />
             }
@@ -254,12 +291,12 @@ const UsersPage = () => {
             control={
               <Checkbox
                 color="primary"
+                checked={filters.onlyMentors}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setRows(users.filter((user: UserType) => user.is_mentor));
-                  } else {
-                    setRows(users);
-                  }
+                  setFilters((prev) => ({
+                    ...prev,
+                    onlyMentors: e.target.checked,
+                  }));
                 }}
               />
             }
@@ -269,19 +306,17 @@ const UsersPage = () => {
             control={
               <Checkbox
                 color="primary"
+                checked={filters.unapprovedMentors}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setRows(
-                      users.filter(
-                        (user: UserType) =>
-                          user.is_mentor &&
-                          !user.approved &&
-                          user.signup_completed,
-                      ),
-                    );
-                  } else {
-                    setRows(users);
-                  }
+                  setFilters((prev) => ({
+                    ...prev,
+                    unapprovedMentors: e.target.checked,
+                    onlyMentors: e.target.checked ? true : prev.onlyMentors,
+                    topMentors: e.target.checked ? false : prev.topMentors,
+                    signupIncomplete: e.target.checked
+                      ? false
+                      : prev.signupIncomplete,
+                  }));
                 }}
               />
             }
@@ -291,16 +326,19 @@ const UsersPage = () => {
             control={
               <Checkbox
                 color="primary"
+                checked={filters.topMentors}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setRows(
-                      users.filter(
-                        (user: UserType) => user.is_mentor && user.top_mentor,
-                      ),
-                    );
-                  } else {
-                    setRows(users);
-                  }
+                  setFilters((prev) => ({
+                    ...prev,
+                    topMentors: e.target.checked,
+                    unapprovedMentors: e.target.checked
+                      ? false
+                      : prev.unapprovedMentors,
+                    signupIncomplete: e.target.checked
+                      ? false
+                      : prev.signupIncomplete,
+                    onlyMentors: e.target.checked ? true : prev.onlyMentors,
+                  }));
                 }}
               />
             }
@@ -311,10 +349,22 @@ const UsersPage = () => {
             label="Search"
             variant="outlined"
             size="small"
-            onChange={onSearch}
+            value={filters.search}
+            onChange={(e) => {
+              setFilters((prev) => ({
+                ...prev,
+                search: e.target.value,
+              }));
+            }}
             InputProps={{
               endAdornment: (
-                <IconButton onClick={onSearch}>
+                <IconButton
+                  onClick={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      search: searchRef.current?.value || '',
+                    }));
+                  }}>
                   <Search />
                 </IconButton>
               ),
