@@ -25,10 +25,10 @@ export const usersTableState = atom({
 export const filterOptionsState = atom({
   key: 'filterOptionsState',
   default: {
-    search: "",
+    search: '',
     topMentors: false,
     signupIncomplete: false,
     unapprovedMentors: false,
-    onlyMentors: false
-  }
-})
+    onlyMentors: false,
+  },
+});
