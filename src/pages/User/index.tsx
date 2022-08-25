@@ -72,7 +72,7 @@ const User = () => {
     ['stats', user?.mentor_information],
     () => getMentorStats(user?.mentor_information),
     {
-      enabled: user?.is_mentor,
+      enabled: user?.is_mentor && user?.signup_completed,
     },
   );
   const meetingsQuery = useQuery(['meetings', id], () => getUserMeetings(id));
@@ -86,7 +86,7 @@ const User = () => {
     <Container>
       <Stack spacing={4}>
         <UserAbout user={user} mentorInfo={mentorInfo} />
-        {user?.is_mentor && (
+        {user?.is_mentor && user?.signup_completed && (
           <Stack>
             <Typography variant="h5" color="textSecondary" gutterBottom>
               User Stats

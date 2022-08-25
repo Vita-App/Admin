@@ -14,13 +14,13 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
+  Avatar,
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
 import Container from 'components/Container';
-import { Delete, Search } from '@mui/icons-material';
-import { DataGrid, GridColDef, GridSelectionModel } from '@mui/x-data-grid';
+import { Search } from '@mui/icons-material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ConfirmDialog from 'components/Modals/ConfirmDialog';
-// import { users } from "data";
 import { SERVER_URL } from 'config.keys';
 import { UserType } from 'types';
 import { useRecoilState } from 'recoil';
@@ -63,8 +63,6 @@ const UsersPage = () => {
   };
   const [openDialog, setOpenDialog] = useState(defaultDialogState);
 
-  const [selectedRows, setSelectedRows] = useState<GridSelectionModel>([]);
-
   const onStatusChange = (userId: string, status: UserStatus) => {
     const title =
       status === UserStatus.Active
@@ -87,6 +85,21 @@ const UsersPage = () => {
   };
 
   const columns: GridColDef<UserType>[] = [
+    {
+      field: 'avatar',
+      headerName: '',
+      width: 50,
+      renderCell: ({ row }) => (
+        <Avatar
+          src={row.avatar?.url || ''}
+          alt={row.first_name}
+          sx={{
+            width: '30px',
+            height: '30px',
+          }}
+        />
+      ),
+    },
     {
       field: 'first_name',
       headerName: 'First Name',
@@ -250,9 +263,7 @@ const UsersPage = () => {
         onClose={() => setOpenDialog(defaultDialogState)}>
         <ConfirmDialog
           onClose={() => setOpenDialog(defaultDialogState)}
-          onConfirm={() => {
-            console.log(selectedRows);
-          }}
+          onConfirm={() => setOpenDialog(defaultDialogState)}
           title={openDialog.title}
           message={openDialog.message}
         />
@@ -385,26 +396,9 @@ const UsersPage = () => {
             setTableState((prev) => ({ ...prev, page: newPage }))
           }
           rowsPerPageOptions={[5, 10, 20]}
-          onSelectionModelChange={(ids) => setSelectedRows(ids)}
-          checkboxSelection
           getRowId={(row) => row._id}
         />
       </Box>
-      {selectedRows.length !== 0 && (
-        <Button
-          onClick={() =>
-            setOpenDialog({
-              open: true,
-              title: 'Are you sure?',
-              message:
-                'These users will be permanently deleted from the database',
-            })
-          }
-          color="error"
-          variant="contained">
-          Delete <Delete />
-        </Button>
-      )}
     </Container>
   );
 };
