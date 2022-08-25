@@ -186,10 +186,8 @@ const UsersPage = () => {
     },
   ];
 
-  const applyFilters = () => {
-    if (!users) return;
-
-    let filteredRows = users;
+  const applyFilters = (fetchedUsers: UserType[]) => {
+    let filteredRows = fetchedUsers;
 
     const {
       search,
@@ -200,7 +198,7 @@ const UsersPage = () => {
     } = filters;
 
     if (search) {
-      filteredRows = users.filter(
+      filteredRows = fetchedUsers.filter(
         (user) =>
           user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
           user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -232,15 +230,15 @@ const UsersPage = () => {
       filteredRows = filteredRows.filter((user) => !user.signup_completed);
     }
 
-    setRows(filteredRows);
+    return filteredRows;
   };
 
   useEffect(() => {
-    setRows(users || []);
+    setRows(applyFilters(users || []));
   }, [users]);
 
   useEffect(() => {
-    applyFilters();
+    setRows(applyFilters(users || []));
   }, [filters]);
 
   if (!users) return <div />;
