@@ -110,7 +110,7 @@ const MeetingsPage = () => {
           variant="contained"
           color="success"
           disabled={!Boolean(row.google_meeting_link)}
-          onClick={() => (window.location.pathname = row.google_meeting_link)}>
+          onClick={() => (window.location.href = row.google_meeting_link)}>
           Join
         </Button>
       ),
