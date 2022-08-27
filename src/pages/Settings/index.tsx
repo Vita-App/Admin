@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import BannerSettings from 'pages/Settings/Banner';
 import { SERVER_URL } from 'config.keys';
 import { Typography } from '@mui/material';
+import Waitlist from './Waitlist';
 
 const SettingsPage = () => {
   const [searchParams] = useSearchParams();
@@ -18,6 +19,7 @@ const SettingsPage = () => {
     <Container>
       <Stack spacing={2} alignItems="flex-start">
         <BannerSettings />
+        <Waitlist />
         <Button
           variant="contained"
           onClick={() =>

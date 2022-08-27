@@ -65,6 +65,14 @@ export interface BannerType {
   height: number;
 }
 
+export interface WaitlistType {
+  _id: string;
+  name: string;
+  email: string;
+  inviteCode: string;
+  invited: boolean;
+}
+
 interface BookingUser {
   _id: string;
   first_name: string;
