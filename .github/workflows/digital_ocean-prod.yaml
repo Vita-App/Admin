@@ -36,4 +36,3 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: 'dist' # Path to the directory you want to copy
           target: '/var/www/html/admin' # Path to the directory you want to copy to
-
